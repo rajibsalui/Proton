@@ -1,10 +1,10 @@
 import fs from "fs-extra";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export async function copyTemplate(template, targetDir, projectName) {
+export async function copyTemplate(template: string, targetDir: string, projectName: string) {
   const templateDir = path.join(__dirname, "..", "templates", template);
 
   await fs.copy(templateDir, targetDir);

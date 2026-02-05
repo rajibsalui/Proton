@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import path from "path";
+import path from "node:path";
 import { copyTemplate } from "./copyTemplate.js";
 import { installDeps } from "./installDeps.js";
 
@@ -29,7 +29,7 @@ export async function createApp(projectName: string) {
     }
   ]);
 
-  const template = resolveTemplate(answers);
+  const template = resolveTemplate(answers as { language: string; database: string });
 
   const targetDir = path.resolve(process.cwd(), projectName);
 
@@ -44,7 +44,7 @@ export async function createApp(projectName: string) {
   console.log(`npm run dev`);
 }
 
-function resolveTemplate({ language, database }) {
+function resolveTemplate({ language, database }: { language: string; database: string }) {
   if (language === "TypeScript" && database === "mongo") return "ts-mongo";
   if (language === "TypeScript" && database === "prisma") return "ts-prisma";
   if (language === "JavaScript" && database === "mongo") return "js-mongo";
