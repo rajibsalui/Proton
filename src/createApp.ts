@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import path from "node:path";
-import { copyTemplate } from "./copyTemplate.js";
-import { installDeps } from "./installDeps.js";
+import { copyTemplate } from "./copyTemplate";
+import { installDeps } from "./installDeps";
 
 export async function createApp(projectName: string) {
   const answers = await inquirer.prompt([
@@ -17,16 +17,10 @@ export async function createApp(projectName: string) {
       message: "Choose database:",
       choices: [
         { name: "MongoDB (Mongoose)", value: "mongo" },
-        { name: "PostgreSQL (Prisma)", value: "prisma" },
+        { name: "PostgreSQL (Prisma)", value: "postgres" },
         
       ]
     },
-    {
-      type: "confirm",
-      name: "install",
-      message: "Install dependencies now?",
-      default: true
-    }
   ]);
 
   const template = resolveTemplate(answers as { language: string; database: string });
@@ -35,9 +29,8 @@ export async function createApp(projectName: string) {
 
   await copyTemplate(template, targetDir, projectName);
 
-  if (answers.install) {
-    installDeps(targetDir);
-  }
+  await installDeps(targetDir); 
+  
 
   console.log("\n✅ Project created successfully\n");
   console.log(`cd ${projectName}`);
@@ -46,9 +39,8 @@ export async function createApp(projectName: string) {
 
 function resolveTemplate({ language, database }: { language: string; database: string }) {
   if (language === "TypeScript" && database === "mongo") return "ts-mongo";
-  if (language === "TypeScript" && database === "prisma") return "ts-prisma";
+  if (language === "TypeScript" && database === "postgres") return "ts-postgres";
   if (language === "JavaScript" && database === "mongo") return "js-mongo";
-  if (language === "JavaScript" && database === "prisma") return "js-prisma";
-  if (language === "TypeScript") return "ts-base";
-  return "js-base";
+  if (language === "JavaScript" && database === "postgres") return "js-postgres";
+  return "js-mongo"; // default template
 }
